@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avance de Mantenimiento 2026</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800;900&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --bg: #f6f4ee;
+    --page-plane: #f0ede4;
+    --surface: #ffffff;
+    --surface-2: #faf8f2;
+    --text-primary: #18160f;
+    --text-secondary: #57544a;
+    --text-muted: #8b8776;
+    --border: rgba(24,22,15,0.12);
+    --border-strong: rgba(24,22,15,0.22);
+    --grid: #e6e2d5;
+    --accent: #2a78d6;
+    --accent-soft: #e7f0fc;
+    --accent-2: #eb6834;
+    --accent-2-soft: #fdece3;
+    --good: #0ca30c;
+    --good-soft: #e4f6e4;
+    --warning: #b9790a;
+    --warning-soft: #fdf0d6;
+    --critical: #d03b3b;
+    --critical-soft: #fbe7e7;
+    --shadow: 0 1px 2px rgba(24,22,15,0.06), 0 8px 24px -12px rgba(24,22,15,0.16);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --bg: #121110; --page-plane: #0d0c0b; --surface: #1a1917; --surface-2: #201f1c;
+      --text-primary: #f4f2ea; --text-secondary: #c4c0b2; --text-muted: #8f8b7c;
+      --border: rgba(255,255,255,0.12); --border-strong: rgba(255,255,255,0.22); --grid: #2c2b26;
+      --accent: #4e93e8; --accent-soft: #1c2c3e; --accent-2: #f2814f; --accent-2-soft: #3a2419;
+      --good: #22c022; --good-soft: #163318; --warning: #e0a531; --warning-soft: #3a2e10;
+      --critical: #e66767; --critical-soft: #3a1c1c;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --bg: #121110; --page-plane: #0d0c0b; --surface: #1a1917; --surface-2: #201f1c;
+    --text-primary: #f4f2ea; --text-secondary: #c4c0b2; --text-muted: #8f8b7c;
+    --border: rgba(255,255,255,0.12); --border-strong: rgba(255,255,255,0.22); --grid: #2c2b26;
+    --accent: #4e93e8; --accent-soft: #1c2c3e; --accent-2: #f2814f; --accent-2-soft: #3a2419;
+    --good: #22c022; --good-soft: #163318; --warning: #e0a531; --warning-soft: #3a2e10;
+    --critical: #e66767; --critical-soft: #3a1c1c;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{ background: var(--page-plane); color: var(--text-primary); font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap{ max-width: 1180px; margin: 0 auto; padding: 28px 20px 80px; }
+  h1,h2,h3{ font-family: "Archivo", "Public Sans", system-ui, sans-serif; text-wrap: balance; margin: 0; }
+  .num{ font-family: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace; font-variant-numeric: tabular-nums; }
+
+  .masthead{ display:flex; justify-content:space-between; align-items:flex-end; gap: 24px; padding-bottom: 20px; margin-bottom: 22px; border-bottom: 2px solid var(--text-primary); flex-wrap: wrap; }
+  .eyebrow{ font-family:"IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 8px; }
+  .masthead h1{ font-size: clamp(28px, 4vw, 40px); font-weight: 800; letter-spacing: -0.01em; }
+  .masthead .sub{ color: var(--text-secondary); font-size: 14.5px; margin-top: 6px; max-width: 50ch; }
+  .masthead .meta{ text-align: right; font-size: 12.5px; color: var(--text-muted); line-height: 1.7; }
+  .meta b{ color: var(--text-secondary); font-weight: 600; }
+
+  .kpis{ display:grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-bottom: 22px; box-shadow: var(--shadow); }
+  .kpi{ background: var(--surface); padding: 18px 16px; display:flex; flex-direction:column; gap: 6px; min-width: 0; }
+  .kpi .label{ font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); font-weight: 600; }
+  .kpi .value{ font-size: 27px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.1; }
+  .kpi .value small{ font-size: 14px; font-weight: 500; color: var(--text-secondary); }
+  .kpi .foot{ font-size: 12px; color: var(--text-secondary); }
+  @media (max-width: 760px){ .kpis{ grid-template-columns: repeat(2,1fr);} }
+
+  section{ margin-bottom: 46px; }
+  .section-head{ display:flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 4px; flex-wrap: wrap; }
+  .section-head h2{ font-size: 20px; font-weight: 800; }
+  .section-tag{ font-family:"IBM Plex Mono", monospace; font-size: 11px; color: var(--text-muted); letter-spacing: 0.06em; }
+  .section-desc{ color: var(--text-secondary); font-size: 14px; max-width: 76ch; margin: 6px 0 18px; }
+  .panel{ background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow); padding: 22px 24px; }
+  .grid-2{ display:grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: stretch; }
+  @media (max-width: 860px){ .grid-2{ grid-template-columns: 1fr; } }
+
+  .legend{ display:flex; gap: 16px; flex-wrap:wrap; font-size: 12.5px; color: var(--text-secondary); }
+  .legend .sw{ display:inline-flex; align-items:center; gap:6px; }
+  .legend i{ width:10px; height:10px; border-radius: 2px; display:inline-block; }
+
+  /* big progress bar with pace marker */
+  .progress-big{ position: relative; height: 34px; background: var(--surface-2); border:1px solid var(--border); border-radius: 4px; overflow:visible; margin: 10px 0 6px; }
+  .progress-big .fill{ position:absolute; inset:0; border-radius:3px; overflow:hidden; }
+  .progress-big .fill-inner{ height:100%; background: var(--accent); }
+  .progress-big .marker{ position:absolute; top:-6px; bottom:-6px; width:2px; background: var(--text-primary); }
+  .progress-big .marker .tip{ position:absolute; top:-18px; left:50%; transform:translateX(-50%); font-size:10px; font-family:"IBM Plex Mono",monospace; color: var(--text-muted); white-space:nowrap; }
+  .progress-big .pct{ position:absolute; inset:0; display:flex; align-items:center; padding-left:12px; font-family:"IBM Plex Mono",monospace; font-weight:700; font-size:14px; color:#fff; mix-blend-mode: normal; }
+  .progress-legend{ display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-top: 14px; }
+
+  .barlist{ display:flex; flex-direction:column; gap: 12px; }
+  .barrow{ display:grid; grid-template-columns: 140px 1fr 96px; gap: 10px; align-items:center; }
+  .barrow .who{ font-size: 13px; font-weight: 600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .barrow .who small{ display:block; font-weight: 400; color: var(--text-muted); font-size: 10.5px; }
+  .track{ position:relative; height: 20px; background: var(--surface-2); border: 1px solid var(--border); border-radius: 3px; overflow:hidden; }
+  .track.stack .fill{ position: relative; float:left; height:100%; }
+  .barrow .val{ font-family:"IBM Plex Mono",monospace; font-size: 13px; text-align:right; font-weight:600; white-space:nowrap; }
+
+  .callout-row{ display:grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-top: 18px; }
+  .callout{ background: var(--surface-2); border: 1px solid var(--border); padding: 12px 14px; }
+  .callout .n{ font-family:"IBM Plex Mono",monospace; font-size: 19px; font-weight:700; }
+  .callout .l{ font-size: 11px; color: var(--text-muted); margin-top:2px; }
+  @media (max-width: 700px){ .callout-row{ grid-template-columns: repeat(2,1fr);} }
+
+  .flag{ display:inline-flex; align-items:center; gap:5px; font-size: 11px; font-weight:700; padding: 2px 7px; border-radius: 3px; letter-spacing:.02em; }
+  .flag.critical{ background: var(--critical-soft); color: var(--critical); }
+  .flag.warning{ background: var(--warning-soft); color: var(--warning); }
+  .flag.good{ background: var(--good-soft); color: var(--good); }
+
+  .table-scroll{ overflow-x: auto; border: 1px solid var(--border); }
+  table{ border-collapse: collapse; width: 100%; font-size: 13px; min-width: 640px; }
+  thead th{ background: var(--surface-2); text-align:left; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; padding: 10px 12px; border-bottom: 1px solid var(--border-strong); white-space:nowrap; }
+  thead th.num, tbody td.num{ text-align: right; }
+  tbody td{ padding: 8px 12px; border-bottom: 1px solid var(--grid); vertical-align: middle; }
+  tbody tr:hover td{ background: var(--surface-2); }
+  td.num{ font-family:"IBM Plex Mono",monospace; }
+  .delta{ font-family:"IBM Plex Mono",monospace; font-size:12px; }
+  .delta.up{ color: var(--good); } .delta.down{ color: var(--critical); }
+
+  .findings p{ margin: 0 0 14px; font-size: 14.5px; line-height: 1.72; color: var(--text-secondary); max-width: 80ch; }
+  .findings p:last-child{ margin-bottom: 0; }
+  .findings strong{ color: var(--text-primary); }
+
+  .context-panel{ display:flex; gap: 18px; flex-wrap: wrap; }
+  .context-item{ flex:1; min-width: 160px; }
+  .context-item .n{ font-family:"IBM Plex Mono",monospace; font-size: 22px; font-weight:700; }
+  .context-item .l{ font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+
+  footer{ border-top: 1px solid var(--border); padding-top: 16px; margin-top: 10px; font-size: 11.5px; color: var(--text-muted); display:flex; flex-direction:column; gap:6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div>
+      <p class="eyebrow">Programa de Mantenimiento · GAME</p>
+      <h1>Avance de Mantenimiento 2026</h1>
+      <p class="sub">Servicios programados y avance real por técnico, a partir de la hoja Dashboard de "MANTENIMIENTOS 2026".</p>
+    </div>
+    <div class="meta">
+      Corte al <b>21 ago 2026</b> · día 21 de 31 (68% del mes)<br>
+      Fuente: <b>MANTENIMIENTOS 2026.xlsx</b> — hoja Dashboard
+    </div>
+  </div>
+
+  <!-- ================= AGOSTO KPIs ================= -->
+  <section>
+    <div class="section-head">
+      <h2>Agosto 2026 — mes en curso</h2>
+      <span class="section-tag">01 / AVANCE DEL MES</span>
+    </div>
+    <div class="kpis">
+      <div class="kpi">
+        <div class="label">Programados</div>
+        <div class="value num">64</div>
+        <div class="foot">servicios con mantenimiento requerido (SI)</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Realizados</div>
+        <div class="value num" style="color:var(--good)">31</div>
+        <div class="foot">con fecha de servicio registrada</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Pendientes</div>
+        <div class="value num" style="color:var(--critical)">33</div>
+        <div class="foot">+3 en estatus "pendiente" aparte</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Avance</div>
+        <div class="value num" style="color:var(--warning)">48.4<small>%</small></div>
+        <div class="foot">vs. 68% del mes ya transcurrido</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;">Avance vs. ritmo del calendario</div>
+      <div class="progress-big">
+        <div class="fill"><div class="fill-inner" style="width:48.4%;"></div></div>
+        <div class="pct">31 / 64 · 48.4%</div>
+        <div class="marker" style="left:67.7%;"><div class="tip">hoy · día 21/31</div></div>
+      </div>
+      <div class="progress-legend"><span>0%</span><span>100% del programa de agosto</span></div>
+      <p class="section-desc" style="margin-top:16px;margin-bottom:0;">Con 68% del mes transcurrido, el avance real (48.4%) va <strong style="color:var(--text-primary)">por debajo del ritmo lineal</strong> — para cerrar agosto al nivel de julio (89.7%) haría falta completar unos 26 servicios más en los 10 días restantes, un poco más de 2.5 por día contando los 8 técnicos.</p>
+    </div>
+  </section>
+
+  <!-- ================= COMPARATIVO JULIO / AGOSTO ================= -->
+  <section>
+    <div class="section-head">
+      <h2>Julio vs. agosto</h2>
+      <span class="section-tag">02 / TENDENCIA</span>
+    </div>
+    <p class="section-desc">Julio cerró completo (105 de 117, 89.7%). Agosto todavía está en curso, así que compararlo en punto de corte no es un veredicto final — es la señal más temprana de qué tan bien va el mes.</p>
+    <div class="grid-2">
+      <div class="panel">
+        <div class="legend" style="margin-bottom:14px;"><span class="sw"><i style="background:var(--accent)"></i>Avance</span></div>
+        <div style="display:flex;flex-direction:column;gap:18px;">
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:6px;"><span>Julio 2026 <span style="color:var(--text-muted);font-weight:400;">(cerrado)</span></span><span class="num">105 / 117</span></div>
+            <div class="track" style="height:22px;"><div class="fill" style="width:89.7%;height:100%;background:var(--good);"></div></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:6px;"><span>Agosto 2026 <span style="color:var(--text-muted);font-weight:400;">(en curso, corte 21 ago)</span></span><span class="num">31 / 64</span></div>
+            <div class="track" style="height:22px;"><div class="fill" style="width:48.4%;height:100%;background:var(--warning);"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="legend" style="margin-bottom:14px;">
+          <span class="sw"><i style="background:var(--accent)"></i>Julio</span>
+          <span class="sw"><i style="background:var(--accent-2)"></i>Agosto</span>
+        </div>
+        <div class="barlist" id="tipoCompare"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= POR TÉCNICO ================= -->
+  <section>
+    <div class="section-head">
+      <h2>Avance por técnico</h2>
+      <span class="section-tag">03 / DESEMPEÑO</span>
+    </div>
+    <p class="section-desc">Servicios de agosto realizados vs. pendientes por técnico, ordenados del avance más bajo al más alto. La columna de julio muestra si el patrón se repite mes a mes o si es ruido de un solo corte.</p>
+    <div class="panel">
+      <div class="legend" style="margin-bottom:14px;">
+        <span class="sw"><i style="background:var(--good)"></i>Realizados</span>
+        <span class="sw"><i style="background:var(--critical)"></i>Pendientes</span>
+      </div>
+      <div class="barlist" id="tecAgosto"></div>
+    </div>
+
+    <div class="panel" style="margin-top:16px;">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Técnico</th>
+              <th class="num">Julio (real/prog)</th>
+              <th class="num">Avance jul</th>
+              <th class="num">Agosto (real/prog)</th>
+              <th class="num">Avance ago</th>
+              <th class="num">Variación</th>
+            </tr>
+          </thead>
+          <tbody id="tecCompareBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTEXTO DE FLOTA ================= -->
+  <section>
+    <div class="section-head">
+      <h2>Contexto de flota</h2>
+      <span class="section-tag">04 / REFERENCIA</span>
+    </div>
+    <div class="panel">
+      <div class="context-panel">
+        <div class="context-item"><div class="n num">205</div><div class="l">equipos activos en el programa</div></div>
+        <div class="context-item"><div class="n num">67 / 33<small style="font-size:13px;">%</small></div><div class="l">combustión (Gas LP) vs. eléctrico</div></div>
+        <div class="context-item"><div class="n num">79</div><div class="l">clientes atendidos</div></div>
+        <div class="context-item"><div class="n num">7</div><div class="l">técnicos en la cartera de equipos, tras mover los 7 de Fernando García a Alexis Gámez</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= HALLAZGOS ================= -->
+  <section>
+    <div class="section-head">
+      <h2>Hallazgos y recomendaciones</h2>
+      <span class="section-tag">05 / LECTURA</span>
+    </div>
+    <div class="panel findings">
+      <p>Agosto va <strong>por debajo del ritmo del calendario</strong>: con 68% del mes transcurrido, el avance es de 48.4% (31 de 64 servicios). No es una diferencia enorme, pero si el ritmo de las últimas tres semanas se mantiene igual, el mes cerraría bastante por debajo del 89.7% que se logró en julio.</p>
+      <p><strong>Fernando García tiene el mejor desempeño del equipo en ambos meses:</strong> 100% de avance en julio (16/16) y 100% en lo que va de agosto (4/4). Es un dato que vale la pena tener presente después de sacarlo de la rotación de equipos esta semana — su historial de cumplimiento no muestra ningún problema de desempeño; la carga baja que tenía (7 equipos) no era reflejo de estar rezagado, sino de una cartera pequeña que cumplía sin falta.</p>
+      <p>El avance por técnico es volátil de un mes a otro más que consistente: Enrique Herrera cerró julio con el avance más bajo del equipo (50%, 10 de 20) y en agosto lidera con 73.3%; Jairo Nájera hizo lo contrario — julio por encima del 100% (18 de 17, un ajuste que vale la pena confirmar en el archivo fuente) y agosto en cero (0 de 5, sin ningún servicio completado todavía). Alexis Gámez y Braulio Muñoz también bajaron de un mes prácticamente perfecto a menos de la mitad de avance en agosto.</p>
+      <p>Por tipo de mantenimiento, el rezago de agosto se concentra en los servicios de <strong>1000 y 2000 horas</strong> (36.4% y 0% de avance) más que en los de 250 horas (52.9%) — son los mantenimientos menos frecuentes pero más largos, y probablemente los que más fácil se posponen frente a la carga diaria.</p>
+      <p><strong>Se sugiere:</strong> revisar con Jairo Nájera qué está deteniendo sus 5 servicios de agosto (viene de ser el más productivo en julio, así que el cero no parece ser un patrón de fondo); priorizar los mantenimientos de 1000/2000 horas pendientes antes de que se acumulen más; y usar el ritmo de julio como referencia realista de lo que el equipo puede lograr en un mes completo al planear la segunda mitad de agosto.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Fuente: MANTENIMIENTOS 2026.xlsx · hoja "Dashboard" (bloques Julio y Agosto) y hojas "MTTO JULIO 2026" / "MTTO AGOSTO 2026".</span>
+    <span>"Avance" = servicios con fecha de realización registrada ÷ servicios programados (estatus "SI") de ese mes. Los 3 equipos en estatus "PENDIENTE" (Logis Packing, Belure, Nifco) son un bloque aparte, en espera de diagnóstico, y no cuentan dentro de los 64 programados de agosto.</span>
+    <span>Julio — Jairo Nájera: 18 realizados sobre 17 programados (avance 105.9%) tal como aparece en el archivo fuente; probablemente incluye un servicio no listado en el conteo original de programados.</span>
+  </footer>
+
+</div>
+
+<script>
+const TEC_AGO = [{"tecnico": "ALEXIS GAMEZ", "real": 3, "pend": 7, "total": 10, "avance": 30.0}, {"tecnico": "BRAULIO MUÑOZ", "real": 3, "pend": 4, "total": 7, "avance": 42.9}, {"tecnico": "CARLOS VAZQUEZ", "real": 5, "pend": 5, "total": 10, "avance": 50.0}, {"tecnico": "ENRIQUE HERRERA", "real": 11, "pend": 4, "total": 15, "avance": 73.3}, {"tecnico": "FERNANDO GARCIA", "real": 4, "pend": 0, "total": 4, "avance": 100.0}, {"tecnico": "FRANCISCO SALDAÑA", "real": 2, "pend": 4, "total": 6, "avance": 33.3}, {"tecnico": "JAIRO NAJERA", "real": 0, "pend": 5, "total": 5, "avance": 0.0}, {"tecnico": "WILLIAMS VALERO", "real": 3, "pend": 4, "total": 7, "avance": 42.9}];
+const TEC_JUL = [{"tecnico": "ALEXIS GAMEZ", "real": 19, "pend": 3, "total": 22, "avance": 86.4}, {"tecnico": "BRAULIO MUÑOZ", "real": 12, "pend": 0, "total": 12, "avance": 100.0}, {"tecnico": "CARLOS VAZQUEZ", "real": 5, "pend": 0, "total": 5, "avance": 100.0}, {"tecnico": "ENRIQUE HERRERA", "real": 10, "pend": 10, "total": 20, "avance": 50.0}, {"tecnico": "FERNANDO GARCIA", "real": 16, "pend": 0, "total": 16, "avance": 100.0}, {"tecnico": "FRANCISCO SALDAÑA", "real": 12, "pend": 0, "total": 12, "avance": 100.0}, {"tecnico": "JAIRO NAJERA", "real": 18, "pend": -1, "total": 17, "avance": 105.9}, {"tecnico": "WILLIAMS VALERO", "real": 13, "pend": 0, "total": 13, "avance": 100.0}];
+
+const TIPO = [
+  {label:"250 horas", jul:{total:93,real:80}, ago:{total:51,real:27}},
+  {label:"1000 horas", jul:{total:19,real:18}, ago:{total:11,real:4}},
+  {label:"2000 horas", jul:{total:5,real:5}, ago:{total:2,real:0}},
+];
+
+function titleCase(s){ return s.trim().split(' ').map(w => w.length>2 ? w[0]+w.slice(1).toLowerCase() : w).join(' '); }
+const cGood='var(--good)', cCrit='var(--critical)', cAccent='var(--accent)', cAccent2='var(--accent-2)';
+
+// ---- técnico agosto bars ----
+const tecHost = document.getElementById('tecAgosto');
+[...TEC_AGO].sort((a,b)=>a.avance-b.avance).forEach(t=>{
+  const row = document.createElement('div'); row.className='barrow';
+  const realPct = t.real/t.total*100, pendPct = t.pend/t.total*100;
+  const flag = t.avance===100 ? '<span class="flag good" style="margin-left:6px;">COMPLETO</span>' : t.avance===0 ? '<span class="flag critical" style="margin-left:6px;">SIN AVANCE</span>' : '';
+  row.innerHTML = `
+    <div class="who">${titleCase(t.tecnico)}<small>${t.total} programados</small></div>
+    <div class="track stack">
+      <div class="fill" style="width:${realPct}%;background:${cGood}"></div>
+      <div class="fill" style="width:${pendPct}%;background:${cCrit}"></div>
+    </div>
+    <div class="val">${t.avance}%${flag}</div>`;
+  tecHost.appendChild(row);
+});
+
+// ---- tipo compare ----
+const tipoHost = document.getElementById('tipoCompare');
+const maxTipo = Math.max(...TIPO.map(t=>t.jul.total));
+TIPO.forEach(t=>{
+  const julPct = t.jul.real/t.jul.total*100, agoPct = t.ago.real/t.ago.total*100;
+  const row1 = document.createElement('div');
+  row1.innerHTML = `<div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px;"><span style="font-weight:600;">${t.label}</span><span class="num" style="color:var(--text-muted);">jul ${t.jul.real}/${t.jul.total} · ago ${t.ago.real}/${t.ago.total}</span></div>
+    <div style="display:flex;gap:4px;">
+      <div class="track" style="flex:1;height:14px;"><div class="fill" style="width:${julPct}%;height:100%;background:${cAccent}"></div></div>
+      <div class="track" style="flex:1;height:14px;"><div class="fill" style="width:${agoPct}%;height:100%;background:${cAccent2}"></div></div>
+    </div>`;
+  row1.style.marginBottom='14px';
+  tipoHost.appendChild(row1);
+});
+
+// ---- comparison table ----
+const body = document.getElementById('tecCompareBody');
+const julMap = Object.fromEntries(TEC_JUL.map(t=>[t.tecnico,t]));
+[...TEC_AGO].sort((a,b)=>b.avance-a.avance).forEach(a=>{
+  const j = julMap[a.tecnico];
+  const delta = a.avance - j.avance;
+  const deltaCls = delta>0 ? 'up' : delta<0 ? 'down' : '';
+  const deltaTxt = (delta>0?'+':'') + delta.toFixed(1) + ' pts';
+  body.innerHTML += `<tr>
+    <td style="font-weight:600;">${titleCase(a.tecnico)}</td>
+    <td class="num">${j.real} / ${j.total}</td>
+    <td class="num">${j.avance}%</td>
+    <td class="num">${a.real} / ${a.total}</td>
+    <td class="num">${a.avance}%</td>
+    <td class="num delta ${deltaCls}">${deltaTxt}</td>
+  </tr>`;
+});
+</script>
+</body>
+</html>
